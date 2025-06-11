@@ -1,0 +1,90 @@
+{
+  "name": "@elizaos/plugin-nuggets",
+  "description": "${PLUGINDESCRIPTION}",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "packageType": "plugin",
+  "platform": "node",
+  "license": "UNLICENSED",
+  "author": "${GITHUB_USERNAME}",
+  "keywords": [
+    "plugin",
+    "elizaos"
+  ],
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "homepage": "https://elizaos.ai",
+  "bugs": {
+    "url": "https://github.com/${GITHUB_USERNAME}/${PLUGINNAME}/issues"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@cacheable/node-cache": "^1.5.6",
+    "@elizaos/core": "^1.0.7",
+    "@elizaos/plugin-bootstrap": "^1.0.7",
+    "jose": "^6.0.11",
+    "openid-client": "^6.5.1",
+    "zod": "3.25.56"
+  },
+  "peerDependencies": {},
+  "devDependencies": {
+    "@elizaos/cli": "1.0.7",
+    "dotenv": "16.4.5",
+    "prettier": "3.5.3",
+    "tsup": "8.4.0",
+    "typescript": "5.8.2",
+    "vitest": "3.1.4"
+  },
+  "scripts": {
+    "start": "elizaos start",
+    "dev": "elizaos dev",
+    "build": "tsup",
+    "lint": "prettier --write ./src",
+    "test:component": "vitest run",
+    "test:e2e": "elizaos test",
+    "test": "npm run test:component && npm run test:e2e",
+    "publish": "elizaos publish",
+    "format": "prettier --write ./src",
+    "format:check": "prettier --check ./src"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "resolutions": {
+    "zod": "3.24.2"
+  },
+  "agentConfig": {
+    "pluginType": "elizaos:plugin:1.0.0",
+    "pluginParameters": {
+      "NUGGETS_OIDC_PROVIDER_URL": {
+        "type": "string",
+        "description": "Nuggets OIDC Provider URL"
+      },
+      "NUGGETS_OIDC_CLIENT_ID": {
+        "type": "string",
+        "description": "Identifier for the Nuggets OIDC Application Client"
+      },
+      "NUGGETS_OIDC_PRIVATE_KEY": {
+        "type": "string",
+        "description": "Private Key for the Nuggets OIDC Application Client (stringified JWKs format)"
+      }
+    }
+  },
+  "gitHead": "d5bd5c43bfebeb7ac02f9e029f924cb6cd5c2ec7"
+}
