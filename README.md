@@ -5,6 +5,9 @@ This is an ElizaOS plugin built with the official plugin starter template.
 ## Development
 
 ```bash
+# Install deps with bun
+bun install
+
 # Start development with hot-reloading
 npm run dev
 
