@@ -15,6 +15,7 @@ export default defineConfig({
     'https',
     'http',
     '@elizaos/core',
+    '@langchain/core',
     'zod',
     'form-data',
     'proxy-from-env',
