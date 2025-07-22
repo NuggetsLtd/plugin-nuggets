@@ -1,6 +1,6 @@
 {
   "name": "@elizaos/plugin-nuggets",
-  "description": "${PLUGINDESCRIPTION}",
+  "description": "ElizaOS plugin for the Nuggets Self-Sovereign Identity platform. Brings verified identity and authentication capabilities to ElizaOS.",
   "version": "0.1.0",
   "type": "module",
   "main": "dist/index.js",
@@ -9,18 +9,18 @@
   "packageType": "plugin",
   "platform": "node",
   "license": "UNLICENSED",
-  "author": "${GITHUB_USERNAME}",
+  "author": "NuggetsLtd",
   "keywords": [
     "plugin",
     "elizaos"
   ],
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git+https://github.com/NuggetsLtd/plugin-nuggets.git"
   },
   "homepage": "https://elizaos.ai",
   "bugs": {
-    "url": "https://github.com/${GITHUB_USERNAME}/${PLUGINNAME}/issues"
+    "url": "https://github.com/NuggetsLtd/plugin-nuggets/issues"
   },
   "exports": {
     "./package.json": "./package.json",
@@ -92,5 +92,6 @@
     }
   },
   "gitHead": "d5bd5c43bfebeb7ac02f9e029f924cb6cd5c2ec7",
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "npmPackage": "@elizaos/plugin-nuggets"
 }
