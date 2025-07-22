@@ -26,7 +26,7 @@ export class ActionVerifyFullName extends NuggetsBaseAction {
       "PROVE_NAME",
     ];
     const description =
-      "Generates an invite link to start identity verification of a user's full name; a link is generated for the expected functionality, and a string of their verified name is returned upon flow completion";
+      "Generates an invite link to start identity verification of a user's full name; a link is generated for the expected functionality, and a string of their verified name is returned upon flow completion. The user should be informed of the verification outcome.";
     const handler: Handler = async (
       runtime,
       message,

@@ -33,7 +33,7 @@ export async function loadOidcClient(runtime: IAgentRuntime) {
   }
 
   providerRuntime = runtime;
-
+  
   const providerUrl =
     runtime.getSetting("NUGGETS_OIDC_PROVIDER_URL") ||
     "https://auth-dev.internal-nuggets.life";
@@ -62,11 +62,11 @@ export async function loadOidcClient(runtime: IAgentRuntime) {
     {
       grant_types,
       token_endpoint_auth_method,
-      // client_secret: OIDCClient.PrivateKeyJwt(crypto.createPrivateKey(jwks[0]))
     },
     OIDCClient.PrivateKeyJwt(key)
   )
-
+  OIDCClient.useJwtResponseMode(oidcClientConfig);
+  
   redirectUri = new URL(`${baseUrl}/api/oidc/callback`);
 }
 
@@ -80,32 +80,22 @@ export async function generateOidcInvite(
     throw new Error("Failed to load OIDC client");
   }
 
-  const finalScope = `openid ${input.scope}`;
+  const finalScope = `openid ${input.scope}`
   const code_verifier: string = OIDCClient.randomPKCECodeVerifier()
   const code_challenge = await OIDCClient.calculatePKCECodeChallenge(code_verifier)
-  const nonce = OIDCClient.randomNonce();
-  let state = uuidv4()
-
+  const nonce = OIDCClient.randomNonce()
+  const state = OIDCClient.randomState()
+  
   const authPayload: Record<string, string> = {
+    redirect_uri: redirectUri.href,
     scope: finalScope,
+    code_challenge,
+    code_challenge_method,
     response_type,
     response_mode,
     state,
     nonce,
-    code_challenge,
-    code_challenge_method,
-    redirect_uri: redirectUri.href,
   };
-
-  /**
-   * We cannot be sure the AS supports PKCE so we're going to use state too. Use
-   * of PKCE is backwards compatible even if the AS doesn't support it which is
-   * why we're using it regardless.
-   */
-  if (!oidcClientConfig.serverMetadata().supportsPKCE()) {
-    state = OIDCClient.randomState()
-    authPayload.state = state
-  }
   
   const redirectTo = await OIDCClient.buildAuthorizationUrlWithPAR(oidcClientConfig, authPayload)
   
@@ -133,10 +123,11 @@ export async function callback(
   if (!oidcClientConfig) {
     throw new Error("Failed to load OIDC client config");
   }
-
-  const { state } = jose.decodeJwt(response.response);
-
+  
+  const decodedJwt = jose.decodeJwt(response.response);
+  const { state } = decodedJwt;
   const cachedValues = await cache.get(state as string);
+  
   if (!cachedValues) {
     throw new Error("No cached values found for state");
   }
@@ -144,8 +135,11 @@ export async function callback(
   const { nonce, code_verifier, scope, agentId, roomId, entityId } =
     cachedValues as OIDCCachedValues;
 
+  const currentUrl = new URL(redirectUri.href)
+  currentUrl.searchParams.set("response", response.response);
+
   // get tokens for accessing protected endpoints
-  let tokens = await OIDCClient.authorizationCodeGrant(oidcClientConfig, redirectUri, {
+  let tokens = await OIDCClient.authorizationCodeGrant(oidcClientConfig, currentUrl, {
     pkceCodeVerifier: code_verifier,
     expectedState: state as string,
     expectedNonce: nonce,
@@ -204,7 +198,9 @@ async function replyToConversation(
 ) {
   const text = determineResponseText(outcome);
   const messageId = createUniqueUuid(runtime, Date.now().toString());
+  const thought = 'The user should be informed of this verification outcome.';
   const content: Content = {
+    thought,
     text,
     attachments: [],
     actions: ["REPLY"],
@@ -233,6 +229,7 @@ async function replyToConversation(
     entityId,
     agentId,
     content: {
+      thought,
       text,
       actions: ["REPLY"],
       source,
@@ -250,9 +247,9 @@ async function replyToConversation(
     // Process the response
     runtime.processActions(message, [message], state, actionCallback),
     // emit message received event
-    runtime.emitEvent("MESSAGE_SENT", {
+    runtime.emitEvent("MESSAGE_RECEIVED", {
       runtime: providerRuntime,
-      message,
+      message: responseMessage,
       callback: actionCallback,
       source,
     }),

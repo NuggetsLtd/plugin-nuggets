@@ -20,7 +20,7 @@ import events from "./events";
 
 export const nuggetsPlugin: Plugin = {
   name: 'plugin-nuggets',
-  description: "Generates and returns invite links for specific nuggets functionality, no data is needed from the user to initiate this out of band process",
+  description: "Generates and returns invite links for specific nuggets functionality, no data is needed from the user to initiate this out of band process. The user should be informed of the verification outcome.",
   config: {
     NUGGETS_OIDC_PROVIDER_URL: process.env.NUGGETS_OIDC_PROVIDER_URL,
     NUGGETS_OIDC_CLIENT_ID: process.env.NUGGETS_OIDC_CLIENT_ID,
@@ -43,27 +43,6 @@ export const nuggetsPlugin: Plugin = {
       throw error;
     }
   },
-  // models: {
-  //   [ModelType.TEXT_SMALL]: async (
-  //     _runtime,
-  //     { prompt, stopSequences = [] }: GenerateTextParams
-  //   ) => {
-  //     return 'Never gonna give you up, never gonna let you down, never gonna run around and desert you...';
-  //   },
-  //   [ModelType.TEXT_LARGE]: async (
-  //     _runtime,
-  //     {
-  //       prompt,
-  //       stopSequences = [],
-  //       maxTokens = 8192,
-  //       temperature = 0.7,
-  //       frequencyPenalty = 0.7,
-  //       presencePenalty = 0.7,
-  //     }: GenerateTextParams
-  //   ) => {
-  //     return 'Never gonna make you cry, never gonna say goodbye, never gonna tell a lie and hurt you...';
-  //   },
-  // },
   routes: [routeOidcCallback],
   events,
   services: [ServiceNuggets],
